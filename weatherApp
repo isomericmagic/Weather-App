@@ -1,0 +1,23 @@
+//require http module
+var http = require("http");
+
+//setup API key and zip input from command line
+const apiKey = '<enter API Key here>';
+let zip = process.argv.slice(2);
+
+//print out the weather based on zip
+const request = http.get(`http://api.wunderground.com/api/${apiKey}/conditions/q/${zip}.json`, response => {
+  // Read, parse and print the data
+  let body = "";
+  response.on('data', data => {
+  body += data.toString();
+  });
+  //console.dir(response);
+  response.on('end', () => {
+    const currentWeather = JSON.parse(body);
+    const currentTemp = currentWeather.current_observation.temp_f;
+    const currentCity = currentWeather.current_observation.display_location.city;
+    console.log('Current temperature in ' + currentCity + ' is ' + currentTemp + ' degrees.');
+    //console.dir(response);
+  });
+});
